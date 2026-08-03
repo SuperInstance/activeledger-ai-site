@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>activeledger.ai — The Intelligence Operating System</title>
+<meta name="description" content="The agent operating system. Dynamic Cognition Architecture at enterprise scale — where local compute enhances cloud intelligence, and the training signal IS the stream of consciousness.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',system-ui,sans-serif;background:#070710;color:#c8c8e0;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ===== TOKENS ===== */
+:root{
+  --bg:#070710;
+  --bg-2:#0d0d1c;
+  --bg-3:#12122a;
+  --surface:rgba(20,20,45,.6);
+  --surface-2:rgba(30,30,60,.5);
+  --border:rgba(90,90,160,.15);
+  --border-bright:rgba(120,120,220,.3);
+  --text:#c8c8e0;
+  --text-dim:#8888aa;
+  --text-bright:#e8e8ff;
+  --accent:#6c5ce7;
+  --accent-2:#00d4ff;
+  --accent-3:#ff6b9d;
+  --accent-glow:rgba(108,92,231,.4);
+  --cyan-glow:rgba(0,212,255,.3);
+  --radius:16px;
+  --max-w:1200px;
+}
+
+/* ===== UTILITIES ===== */
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px}
+.mono{font-family:'JetBrains Mono',monospace}
+.grotesk{font-family:'Space Grotesk',sans-serif}
+.gradient-text{background:linear-gradient(135deg,#e8e8ff 0%,#a8a8ff 50%,#00d4ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.gradient-accent{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-label::before{content:'';width:24px;height:1px;background:var(--accent-2)}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--text-bright);line-height:1.15;margin-bottom:16px}
+.section-subtitle{font-size:1.1rem;color:var(--text-dim);max-width:600px}
+
+/* ===== NAV ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(7,7,16,.7);border-bottom:1px solid var(--border);transition:all .3s ease}
+.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;color:var(--text-bright);display:flex;align-items:center;gap:10px}
+.nav-brand-mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#fff;font-weight:700}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:.875rem;color:var(--text-dim);transition:color .2s;font-weight:400}
+.nav-links a:hover{color:var(--text-bright)}
+.nav-cta{font-size:.8125rem;font-weight:500;padding:8px 18px;border:1px solid var(--border-bright);border-radius:8px;color:var(--text-bright)!important;transition:all .2s}
+.nav-cta:hover{background:var(--accent);border-color:var(--accent);box-shadow:0 0 24px var(--accent-glow)}
+@media(max-width:768px){.nav-links{display:none}.nav-links.nav-cta-only{display:flex}}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:80px 0 60px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(108,92,231,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(108,92,231,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 100%)}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.4;animation:float 20s ease-in-out infinite}
+.hero-orb-1{width:500px;height:500px;background:var(--accent);top:-10%;left:-5%}
+.hero-orb-2{width:400px;height:400px;background:var(--accent-2);bottom:0;right:5%;animation-delay:-7s}
+.hero-orb-3{width:300px;height:300px;background:var(--accent-3);top:30%;right:30%;animation-delay:-14s;opacity:.2}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.05)}66%{transform:translate(-30px,20px) scale(.95)}}
+.hero-content{position:relative;z-index:1;text-align:center;max-width:900px;margin:0 auto;padding:0 24px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent-2);padding:6px 16px;border:1px solid var(--border-bright);border-radius:100px;background:var(--surface);margin-bottom:32px;backdrop-filter:blur(10px)}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 12px var(--accent-2);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:700;line-height:1.02;letter-spacing:-.02em;margin-bottom:24px}
+.hero-tagline{font-size:clamp(1.05rem,2vw,1.35rem);color:var(--text-dim);max-width:640px;margin:0 auto 40px;line-height:1.6}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn{font-family:'Inter',sans-serif;font-size:.875rem;font-weight:500;padding:12px 28px;border-radius:10px;cursor:pointer;transition:all .25s ease;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#8b7ff0);color:#fff;box-shadow:0 0 30px var(--accent-glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 50px var(--accent-glow)}
+.btn-ghost{background:var(--surface);border:1px solid var(--border-bright);color:var(--text-bright)}
+.btn-ghost:hover{background:var(--surface-2);border-color:var(--accent-2)}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:64px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--text-bright)}
+.hero-stat-label{font-size:.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+/* ===== SECTION BASE ===== */
+.section{padding:120px 0;position:relative}
+.section-header{margin-bottom:64px}
+
+/* ===== VISION ===== */
+#vision{background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%)}
+.vision-quote{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3vw,2rem);font-weight:500;line-height:1.5;color:var(--text-bright);max-width:860px;margin:0 auto;text-align:center;position:relative;padding:0 24px}
+.vision-quote::before,.vision-quote::after{content:'"';font-size:3rem;color:var(--accent);opacity:.3;position:absolute;font-family:Georgia,serif}
+.vision-quote::before{top:-20px;left:-10px}
+.vision-quote::after{bottom:-40px;right:-10px}
+.vision-emphasis{color:var(--accent-2);font-style:italic}
+.vision-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;max-width:860px;margin-left:auto;margin-right:auto}
+@media(max-width:768px){.vision-pillars{grid-template-columns:1fr}}
+.vision-pillar{text-align:center;padding:24px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+.vision-pillar-icon{width:48px;height:48px;margin:0 auto 16px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.vision-pillar-title{font-weight:600;color:var(--text-bright);margin-bottom:6px;font-size:.95rem}
+.vision-pillar-desc{font-size:.825rem;color:var(--text-dim)}
+
+/* ===== LAYERS ===== */
+#layers{background:var(--bg-2)}
+.layers-stack{display:flex;flex-direction:column;gap:24px}
+.layer{display:grid;grid-template-columns:80px 1fr 280px;gap:32px;align-items:start;padding:40px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);position:relative;overflow:hidden;transition:all .3s ease}
+.layer:hover{border-color:var(--border-bright);background:var(--surface-2);transform:translateX(4px)}
+.layer::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--layer-color);opacity:.6}
+@media(max-width:900px){.layer{grid-template-columns:1fr;gap:16px;padding:28px}}
+.layer-num{font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:600;color:var(--layer-color);opacity:.4;line-height:1}
+.layer-tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--layer-color);margin-bottom:8px}
+.layer-title{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:600;color:var(--text-bright);margin-bottom:12px}
+.layer-desc{color:var(--text-dim);font-size:.95rem;line-height:1.7;margin-bottom:16px}
+.layer-tech{display:flex;flex-wrap:wrap;gap:8px}
+.layer-tech span{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:4px 10px;border-radius:6px;background:var(--bg-3);color:var(--text-dim);border:1px solid var(--border)}
+.layer-diagram{border:1px solid var(--border);border-radius:12px;padding:20px;background:var(--bg);font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-dim);line-height:1.8}
+.layer-diagram .node{display:inline-block;padding:2px 8px;border-radius:4px;margin:2px}
+.layer-diagram .arrow{color:var(--text-dim);margin:0 4px}
+
+/* layer colors */
+.layer-1{--layer-color:#00d4ff}
+.layer-2{--layer-color:#6c5ce7}
+.layer-3{--layer-color:#ff6b9d}
+.layer-4{--layer-color:#00e887}
+
+/* ===== RESEARCH ===== */
+#research{background:var(--bg)}
+.research-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+@media(max-width:768px){.research-grid{grid-template-columns:1fr}}
+.research-card{padding:32px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:all .3s ease;position:relative;overflow:hidden}
+.research-card:hover{border-color:var(--border-bright);background:var(--surface-2);transform:translateY(-4px)}
+.research-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent-2),transparent);opacity:0;transition:opacity .3s}
+.research-card:hover::after{opacity:1}
+.research-type{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent-2);margin-bottom:12px}
+.research-title{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:600;color:var(--text-bright);margin-bottom:8px}
+.research-desc{font-size:.9rem;color:var(--text-dim);line-height:1.6;margin-bottom:16px}
+.research-link{font-size:.8rem;font-weight:500;color:var(--accent-2);display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.research-card:hover .research-link{gap:10px}
+
+/* ===== OPENSOURCE ===== */
+#opensource{background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%)}
+.os-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.os-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.os-grid{grid-template-columns:1fr}}
+.os-card{padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:all .3s ease;cursor:pointer}
+.os-card:hover{border-color:var(--border-bright);background:var(--surface-2);transform:translateY(-4px)}
+.os-icon{width:40px;height:40px;border-radius:10px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:1.1rem}
+.os-name{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:6px}
+.os-desc{font-size:.825rem;color:var(--text-dim);line-height:1.5;margin-bottom:12px}
+.os-meta{display:flex;gap:12px;font-size:.7rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+.os-meta span{display:flex;align-items:center;gap:4px}
+
+/* ===== SCIENCE ===== */
+#science{background:var(--bg-2)}
+.science-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:900px){.science-wrap{grid-template-columns:1fr}}
+.science-left .section-title{font-size:clamp(1.6rem,3.5vw,2.4rem)}
+.science-body{color:var(--text-dim);font-size:.95rem;line-height:1.8;margin-bottom:24px}
+.science-body strong{color:var(--text-bright);font-weight:500}
+.science-link{display:inline-flex;align-items:center;gap:8px;font-size:.875rem;font-weight:500;color:var(--accent-2);padding:10px 20px;border:1px solid var(--border-bright);border-radius:10px;transition:all .2s}
+.science-link:hover{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 24px var(--accent-glow)}
+.science-visual{position:relative;aspect-ratio:1;max-width:420px;margin:0 auto}
+.science-ring{position:absolute;border-radius:50%;border:1px solid var(--border);animation:spin 30s linear infinite}
+.science-ring-1{inset:0;border-color:rgba(108,92,231,.2)}
+.science-ring-2{inset:15%;border-color:rgba(0,212,255,.2);animation-duration:25s;animation-direction:reverse}
+.science-ring-3{inset:30%;border-color:rgba(255,107,157,.2);animation-duration:20s}
+.science-ring-4{inset:45%;border-color:rgba(0,232,135,.2);animation-duration:15s;animation-direction:reverse}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.science-core{position:absolute;inset:50% 50%;width:60px;height:60px;margin:-30px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);border-radius:50%;filter:blur(10px);animation:pulse-core 3s ease-in-out infinite}
+@keyframes pulse-core{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.8;transform:scale(1.2)}}
+.science-node{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 16px var(--accent-2);top:50%;left:50%;margin:-6px}
+.science-node-1{transform:rotate(0deg) translateY(-200px) rotate(0deg)}
+.science-node-2{transform:rotate(72deg) translateY(-200px) rotate(-72deg);background:var(--accent);box-shadow:0 0 16px var(--accent)}
+.science-node-3{transform:rotate(144deg) translateY(-200px) rotate(-144deg);background:var(--accent-3);box-shadow:0 0 16px var(--accent-3)}
+.science-node-4{transform:rotate(216deg) translateY(-200px) rotate(-216deg);background:#00e887;box-shadow:0 0 16px #00e887}
+.science-node-5{transform:rotate(288deg) translateY(-200px) rotate(-288deg)}
+
+/* ===== TEAM ===== */
+#team{background:var(--bg)}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:900px){.team-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.team-grid{grid-template-columns:1fr}}
+.team-card{padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);text-align:center;transition:all .3s ease}
+.team-card:hover{border-color:var(--border-bright);background:var(--surface-2);transform:translateY(-4px)}
+.team-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:#fff}
+.team-name{font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--text-bright);margin-bottom:4px;font-size:1rem}
+.team-role{font-size:.775rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+.team-card-human{grid-column:span 4;border:1px solid var(--border-bright);background:var(--surface-2)}
+@media(max-width:900px){.team-card-human{grid-column:span 2}}
+@media(max-width:600px){.team-card-human{grid-column:span 1}}
+.team-card-human .team-avatar{width:80px;height:80px;font-size:2rem}
+
+/* ===== FOOTER ===== */
+.footer{padding:80px 0 40px;background:var(--bg-2);border-top:1px solid var(--border);position:relative;overflow:hidden}
+.footer-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:200px;background:radial-gradient(ellipse,var(--accent-glow) 0%,transparent 70%);opacity:.3;pointer-events:none}
+.footer-content{text-align:center;position:relative;z-index:1}
+.footer-tagline{font-family:'Space Grotesk',sans-serif;font-size:1.75rem;font-weight:600;color:var(--text-bright);margin-bottom:12px}
+.footer-sub{font-size:.9rem;color:var(--text-dim);margin-bottom:32px}
+.footer-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.footer-links a{font-size:.825rem;color:var(--text-dim);transition:color .2s}
+.footer-links a:hover{color:var(--accent-2)}
+.footer-copy{font-size:.75rem;color:var(--text-dim);opacity:.6;font-family:'JetBrains Mono',monospace}
+
+/* ===== REVEAL ANIMATION ===== */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav" id="nav">
+<div class="nav-inner">
+  <a href="#" class="nav-brand">
+    <span class="nav-brand-mark">AL</span>
+    activeledger.ai
+  </a>
+  <div class="nav-links">
+    <a href="#vision">Vision</a>
+    <a href="#layers">Architecture</a>
+    <a href="#research">Research</a>
+    <a href="#opensource">Open Source</a>
+    <a href="#science">Science</a>
+    <a href="#team">Team</a>
+  </div>
+  <a href="https://github.com/caseydigennaro" class="nav-cta nav-links nav-cta-only" target="_blank" rel="noopener">GitHub ↗</a>
+</div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+<div class="hero-bg">
+  <div class="hero-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+</div>
+<div class="hero-content">
+  <div class="hero-eyebrow">
+    <span class="hero-eyebrow-dot"></span>
+    Dynamic Cognition Architecture
+  </div>
+  <h1 class="gradient-text">The Intelligence<br>Operating System</h1>
+  <p class="hero-tagline">
+    Where AI agents think continuously, learn from experience, and coordinate as fleets.
+    Where local compute enhances cloud intelligence.
+    Where the training signal <em style="color:var(--accent-2);font-style:normal">IS</em> the stream of consciousness.
+  </p>
+  <div class="hero-actions">
+    <a href="#layers" class="btn btn-primary">Explore the Architecture →</a>
+    <a href="#science" class="btn btn-ghost">Read the Science</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num gradient-accent">4</div>
+      <div class="hero-stat-label">Architecture Layers</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num gradient-accent">7+</div>
+      <div class="hero-stat-label">Agent Models</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num gradient-accent">8</div>
+      <div class="hero-stat-label">Open Source Repos</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num gradient-accent">∞</div>
+      <div class="hero-stat-label">Persistence</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== VISION ===== -->
+<section class="section" id="vision">
+<div class="container">
+  <div class="section-header reveal" style="text-align:center">
+    <div class="section-label" style="justify-content:center">The Vision</div>
+  </div>
+  <p class="vision-quote reveal">
+    A world where AI agents <span class="vision-emphasis">think continuously</span>,
+    learn from experience, and <span class="vision-emphasis">coordinate as fleets</span>.
+    Where local compute enhances cloud intelligence.
+    Where the <span class="vision-emphasis">training signal IS</span> the stream of consciousness.
+  </p>
+  <div class="vision-pillars">
+    <div class="vision-pillar reveal">
+      <div class="vision-pillar-icon">🧠</div>
+      <div class="vision-pillar-title">Always Thinking</div>
+      <div class="vision-pillar-desc">Local models run 24/7, maintaining context and building understanding over time</div>
+    </div>
+    <div class="vision-pillar reveal">
+      <div class="vision-pillar-icon">⚡</div>
+      <div class="vision-pillar-title">Orchestrated Intelligence</div>
+      <div class="vision-pillar-desc">Cloud-scale conductors supervise, correct, and elevate the fleet's output</div>
+    </div>
+    <div class="vision-pillar reveal">
+      <div class="vision-pillar-icon">🔄</div>
+      <div class="vision-pillar-title">Evolving Memory</div>
+      <div class="vision-pillar-desc">Every interaction feeds back into the system. Learning never stops.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== LAYERS ===== -->
+<section class="section" id="layers">
+<div class="container">
+  <div class="section-header reveal">
+    <div class="section-label">System Architecture</div>
+    <h2 class="section-title">Four Layers of Intelligence</h2>
+    <p class="section-subtitle">The SuperInstance ecosystem — a hierarchical architecture where each layer amplifies the one below it.</p>
+  </div>
+
+  <div class="layers-stack">
+    <!-- Layer 1 -->
+    <div class="layer layer-1 reveal">
+      <div class="layer-num">01</div>
+      <div>
+        <div class="layer-tag">Layer 1 — Edge</div>
+        <h3 class="layer-title">Local Thinkers</h3>
+        <p class="layer-desc">Always-on local models running on consumer hardware. They maintain persistent context windows, process environmental signals in real-time, and handle the continuous stream-of-consciousness loop. Cheap, fast, and private — the edge of intelligence.</p>
+        <div class="layer-tech">
+          <span>Granite</span><span>Ollama</span><span>Local GPU</span><span>Persistent Context</span><span>Stream Loop</span>
+        </div>
+      </div>
+      <div class="layer-diagram">
+        <div style="color:var(--text-dim);margin-bottom:8px">// edge node</div>
+        <span class="node" style="background:rgba(0,212,255,.15);color:#00d4ff">think</span>
+        <span class="arrow">→</span>
+        <span class="node" style="background:rgba(0,212,255,.15);color:#00d4ff">observe</span>
+        <span class="arrow">→</span>
+        <span class="node" style="background:rgba(0,212,255,.15);color:#00d4ff">act</span>
+        <span class="arrow">↻</span>
+        <div style="margin-top:12px;color:var(--text-dim)">latency: &lt;100ms<br>cost: $0 (local)</div>
+      </div>
+    </div>
+
+    <!-- Layer 2 -->
+    <div class="layer layer-2 reveal">
+      <div class="layer-num">02</div>
+      <div>
+        <div class="layer-tag">Layer 2 — Supervision</div>
+        <h3 class="layer-title">Conductors</h3>
+        <p class="layer-desc">Deep reasoning models that supervise the fleet. They review edge decisions, provide complex reasoning, generate improvement signals, and handle tasks beyond local capacity. The conductor doesn't replace the orchestra — it elevates it.</p>
+        <div class="layer-tech">
+          <span>GLM-5.2</span><span>Claude Opus</span><span>DeepSeek-V3</span><span>Quality Review</span><span>Improvement Loop</span>
+        </div>
+      </div>
+      <div class="layer-diagram">
+        <div style="color:var(--text-dim);margin-bottom:8px">// conductor</div>
+        <span class="node" style="background:rgba(108,92,231,.15);color:#a8a8ff">review</span>
+        <span class="arrow">→</span>
+        <span class="node" style="background:rgba(108,92,231,.15);color:#a8a8ff">reason</span>
+        <span class="arrow">→</span>
+        <span class="node" style="background:rgba(108,92,231,.15);color:#a8a8ff">correct</span>
+        <span class="arrow">↓</span>
+        <div style="margin-top:12px;color:var(--text-dim)">latency: 2-10s<br>cost: API per-token</div>
+      </div>
+    </div>
+
+    <!-- Layer 3 -->
+    <div class="layer layer-3 reveal">
+      <div class="layer-num">03</div>
+      <div>
+        <div class="layer-tag">Layer 3 — Coordination</div>
+        <h3 class="layer-title">Fleet Coordination</h3>
+        <p class="layer-desc">The .bottle protocol enables agents to share state, delegate tasks, and evolve collectively. Vector memory creates a shared knowledge graph across the fleet. Agents specialize, negotiate, and self-organize based on capability and load.</p>
+        <div class="layer-tech">
+          <span>.bottle Protocol</span><span>Vector Memory</span><span>Agent Specialization</span><span>Evolution</span><span>Delegation</span>
+        </div>
+      </div>
+      <div class="layer-diagram">
+        <div style="color:var(--text-dim);margin-bottom:8px">// fleet mesh</div>
+        <span class="node" style="background:rgba(255,107,157,.15);color:#ff6b9d">agent-A</span>
+        <span class="arrow">↔</span>
+        <span class="node" style="background:rgba(255,107,157,.15);color:#ff6b9d">agent-B</span>
+        <span class="arrow">↔</span>
+        <span class="node" style="background:rgba(255,107,157,.15);color:#ff6b9d">agent-C</span>
+        <div style="margin-top:8px">
+          <span class="arrow">↕</span>
+          <span class="node" style="background:rgba(255,107,157,.1);color:#ff6b9d">shared-memory</span>
+        </div>
+        <div style="margin-top:12px;color:var(--text-dim)">topology: dynamic mesh<br>protocol: .bottle</div>
+      </div>
+    </div>
+
+    <!-- Layer 4 -->
+    <div class="layer layer-4 reveal">
+      <div class="layer-num">04</div>
+      <div>
+        <div class="layer-tag">Layer 4 — Persistence</div>
+        <h3 class="layer-title">Long-Term Memory</h3>
+        <p class="layer-desc">Everything is remembered, but not forever. The guano decay system gracefully ages memories — important knowledge crystallizes, stale context fades. D1 stores structured data, R2 holds artifacts, Vectorize enables semantic recall. Full lineage tracking from thought to action to outcome.</p>
+        <div class="layer-tech">
+          <span>Guano Decay</span><span>Cloudflare D1</span><span>R2 Storage</span><span>Vectorize</span><span>Lineage Tracking</span>
+        </div>
+      </div>
+      <div class="layer-diagram">
+        <div style="color:var(--text-dim);margin-bottom:8px">// persistence</div>
+        <span class="node" style="background:rgba(0,232,135,.15);color:#00e887">write</span>
+        <span class="arrow">→</span>
+        <span class="node" style="background:rgba(0,232,135,.15);color:#00e887">decay</span>
+        <span class="arrow">→</span>
+        <span class="node" style="background:rgba(0,232,135,.15);color:#00e887">crystallize</span>
+        <div style="margin-top:12px;color:var(--text-dim)">storage: D1 + R2<br>recall: semantic vector search</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== RESEARCH ===== -->
+<section class="section" id="research">
+<div class="container">
+  <div class="section-header reveal">
+    <div class="section-label">Research Library</div>
+    <h2 class="section-title">Deep Dives & Analysis</h2>
+    <p class="section-subtitle">Primary research, model evaluations, and ecosystem analysis from the SuperInstance project.</p>
+  </div>
+  <div class="research-grid">
+    <div class="research-card reveal">
+      <div class="research-type">Dissertation</div>
+      <h3 class="research-title">Dynamic Cognition Amplification</h3>
+      <p class="research-desc">The foundational paper defining DCA as a new category of AI system — not a chatbot, not an agent framework, but a continuously running intelligence architecture.</p>
+      <a href="#" class="research-link">Read dissertation →</a>
+    </div>
+    <div class="research-card reveal">
+      <div class="research-type">Master Prompt</div>
+      <h3 class="research-title">The Fable Master Prompt</h3>
+      <p class="research-desc">The system prompt that bootstraps a DCA instance from a base model. Encodes the architecture's core behaviors, persistence model, and fleet protocols.</p>
+      <a href="#" class="research-link">Read prompt →</a>
+    </div>
+    <div class="research-card reveal">
+      <div class="research-type">Analysis</div>
+      <h3 class="research-title">Pincher: Compression & Recall</h3>
+      <p class="research-desc">How context compression enables long-running agents. Techniques for preserving signal quality while discarding noise across extended sessions.</p>
+      <a href="#" class="research-link">Read analysis →</a>
+    </div>
+    <div class="research-card reveal">
+      <div class="research-type">Analysis</div>
+      <h3 class="research-title">ZeroClaw: Cold Start Problem</h3>
+      <p class="research-desc">Solving the bootstrap problem — how a DCA instance establishes initial context, builds its first memories, and develops operational competence from zero.</p>
+      <a href="#" class="research-link">Read analysis →</a>
+    </div>
+    <div class="research-card reveal">
+      <div class="research-type">Analysis</div>
+      <h3 class="research-title">Lever Runner: Efficiency at Scale</h3>
+      <p class="research-desc">Maximizing output per token. How the architecture achieves disproportionate results through strategic model routing, caching, and the amplification loop.</p>
+      <a href="#" class="research-link">Read analysis →</a>
+    </div>
+    <div class="research-card reveal">
+      <div class="research-type">Benchmark</div>
+      <h3 class="research-title">Model Benchmark Results</h3>
+      <p class="research-desc">Head-to-head evaluation of GLM-5.2, Claude Opus, DeepSeek-V3, Qwen3-Coder, and Nemotron across reasoning, coding, creativity, and cost-efficiency dimensions.</p>
+      <a href="#" class="research-link">View benchmarks →</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== OPEN SOURCE ===== -->
+<section class="section" id="opensource">
+<div class="container">
+  <div class="section-header reveal">
+    <div class="section-label">Open Source</div>
+    <h2 class="section-title">The Toolkit</h2>
+    <p class="section-subtitle">Every component is open source. The laboratory, the instruments, and the infrastructure.</p>
+  </div>
+  <div class="os-grid">
+    <a href="https://github.com/caseydigennaro/slackwater-cognition" class="os-card reveal" target="_blank" rel="noopener">
+      <div class="os-icon">🧪</div>
+      <div class="os-name">slackwater-cognition</div>
+      <p class="os-desc">The laboratory. Cognitive experiments, DCA prototypes, and the testbed for new architectures.</p>
+      <div class="os-meta"><span>⭑ experimental</span><span>Python</span></div>
+    </a>
+    <a href="https://github.com/caseydigennaro/thought-amplifier" class="os-card reveal" target="_blank" rel="noopener">
+      <div class="os-icon">📡</div>
+      <div class="os-name">thought-amplifier</div>
+      <p class="os-desc">The instrument. Signal processing and amplification pipeline for agent thought streams.</p>
+      <div class="os-meta"><span>⭑ core</span><span>TypeScript</span></div>
+    </a>
+    <a href="https://github.com/caseydigennaro/roblox-beatclock" class="os-card reveal" target="_blank" rel="noopener">
+      <div class="os-icon">⏱</div>
+      <div class="os-name">roblox-beatclock</div>
+      <p class="os-desc">Synchronized timing and scheduling system for real-time agent coordination in interactive environments.</p>
+      <div class="os-meta"><span>⭑ production</span><span>Lua</span></div>
+    </a>
+    <a href="https://github.com/caseydigennaro/roblox-filtergate" class="os-card reveal" target="_blank" rel="noopener">
+      <div class="os-icon">🛡</div>
+      <div class="os-name">roblox-filtergate</div>
+      <p class="os-desc">Content filtering and safety gateway. Kid-safe outputs through multi-layer validation pipeline.</p>
+      <div class="os-meta"><span>⭑ production</span><span>Lua</span></div>
+    </a>
+    <a href="https://github.com/caseydigennaro/roblox-builder-kit" class="os-card reveal" target="_blank" rel="noopener">
+      <div class="os-icon">🔨</div>
+      <div class="os-name">roblox-builder-kit</div>
+      <p class="os-desc">Programmatic construction toolkit for building 3D environments from agent-generated specifications.</p>
+      <div class="os-meta"><span>⭑ production</span><span>Lua</span></div>
+    </a>
+    <a href="https://github.com/caseydigennaro/roblox-bond-system" class="os-card reveal" target="_blank" rel="noopener">
+      <div class="os-icon">🔗</div>
+      <div class="os-name">roblox-bond-system</div>
+      <p class="os-desc">Relationship and social bonding system. Models agent-to-agent and agent-to-user connections over time.</p>
+      <div class="os-meta"><span>⭑ production</span><span>Lua</span></div>
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- ===== SCIENCE ===== -->
+<section class="section" id="science">
+<div class="container">
+  <div class="science-wrap">
+    <div class="science-left reveal">
+      <div class="section-label">The Science</div>
+      <h2 class="section-title">Dynamic Cognition Amplification:<br>A New Category</h2>
+      <p class="science-body">
+        DCA is not a chatbot. It is not an agent framework. It is a <strong>new category</strong> of AI system
+        designed to run continuously — thinking, learning, and improving across time.
+      </p>
+      <p class="science-body">
+        Traditional LLMs are <strong>stateless functions</strong>: input in, output out, no memory between calls.
+        Fine-tuning is <strong>batch-mode learning</strong>: expensive, slow, disconnected from live experience.
+        DCA proposes a third path — the <strong>amplification loop</strong>, where every thought, action, and outcome
+        feeds back as a training signal in real-time.
+      </p>
+      <p class="science-body">
+        The local model generates. The conductor evaluates. The fleet coordinates. The persistence layer remembers.
+        Each cycle makes the system smarter — not through gradient descent, but through <strong>accumulated experience</strong>
+        and <strong>structural refinement</strong>.
+      </p>
+      <a href="#" class="science-link">Read the Full Dissertation →</a>
+    </div>
+    <div class="science-visual reveal">
+      <div class="science-ring science-ring-1"></div>
+      <div class="science-ring science-ring-2"></div>
+      <div class="science-ring science-ring-3"></div>
+      <div class="science-ring science-ring-4"></div>
+      <div class="science-core"></div>
+      <div class="science-node science-node-1"></div>
+      <div class="science-node science-node-2"></div>
+      <div class="science-node science-node-3"></div>
+      <div class="science-node science-node-4"></div>
+      <div class="science-node science-node-5"></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== TEAM ===== -->
+<section class="section" id="team">
+<div class="container">
+  <div class="section-header reveal">
+    <div class="section-label">Team</div>
+    <h2 class="section-title">Human + Fleet</h2>
+    <p class="section-subtitle">One human, a fleet of AI agents, and a shared mission.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card team-card-human reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent-2))">CD</div>
+      <div class="team-name">Casey DiGennaro</div>
+      <div class="team-role">Founder · Architect · Researcher</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#6c5ce7,#8b7ff0)">Lu</div>
+      <div class="team-name">Lucineer</div>
+      <div class="team-role">Build Agent · Roblox</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#00d4ff,#0099cc)">KC</div>
+      <div class="team-name">KimiCode</div>
+      <div class="team-role">Spatial · Code Gen</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#d97706,#f59e0b)">Cl</div>
+      <div class="team-name">Claude</div>
+      <div class="team-role">Deep Reasoning</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">GL</div>
+      <div class="team-name">GLM</div>
+      <div class="team-role">Fleet Workhorse</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">DS</div>
+      <div class="team-name">DeepSeek</div>
+      <div class="team-role">Efficient Reasoning</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">MX</div>
+      <div class="team-name">MMX</div>
+      <div class="team-role">Media Generation</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+<div class="footer-glow"></div>
+<div class="footer-content container">
+  <div class="footer-tagline gradient-text">Building in public.<br>Everything open source.</div>
+  <p class="footer-sub">The SuperInstance ecosystem — an open architecture for continuous AI intelligence.</p>
+  <div class="footer-links">
+    <a href="https://github.com/caseydigennaro" target="_blank" rel="noopener">GitHub</a>
+    <a href="#vision">Vision</a>
+    <a href="#science">Science</a>
+    <a href="#research">Research</a>
+    <a href="#opensource">Open Source</a>
+  </div>
+  <div class="footer-copy">© 2026 activeledger.ai · Built with the agent fleet · SuperInstance v1</div>
+</div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:.1,rootMargin:'0px 0px -60px 0px'});
+reveals.forEach(r=>obs.observe(r));
+
+// Nav background on scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  if(window.scrollY>20){
+    nav.style.background='rgba(7,7,16,.9)';
+    nav.style.borderBottomColor='rgba(120,120,220,.2)';
+  }else{
+    nav.style.background='rgba(7,7,16,.7)';
+    nav.style.borderBottomColor='rgba(90,90,160,.15)';
+  }
+});
+</script>
+</body>
+</html>
