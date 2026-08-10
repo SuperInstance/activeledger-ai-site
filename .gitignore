@@ -1,5 +1,8 @@
+# Dependencies
 node_modules/
-dist/
-.env
-.DS_Store
 
+# Jest
+coverage/
+
+# Wrangler
+.wrangler/

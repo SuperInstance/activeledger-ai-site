@@ -1,0 +1,19 @@
+{
+  "name": "activeledger-ai-site",
+  "version": "1.0.0",
+  "description": "activeledger.ai landing page",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^30.4.1",
+    "jsdom": "^22.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/test/**/*.test.js"
+    ]
+  }
+}
